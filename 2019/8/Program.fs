@@ -1,13 +1,4 @@
-﻿// Learn more about F# at http://fsharp.org
-
-open System
-open System.IO
-
-let convertToString num =
-    match num with
-    | 1 -> "\u2588"
-    | _ -> " "
-
+﻿let convertToString num = if num = 1 then "\u2588" else " "
 let combineLayer (topVal, bottomVal) =
     match topVal with
     | 0 | 1 -> topVal
@@ -28,7 +19,7 @@ let drawImage width imageData =
 
 [<EntryPoint>]
 let main argv =
-    let imageLayers = File.ReadAllLines "data.txt"
+    let imageLayers = System.IO.File.ReadAllLines "data.txt"
                         |> Seq.head
                         |> Seq.map (string >> int)
                         |> Seq.chunkBySize (25 * 6)
