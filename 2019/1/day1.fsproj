@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="day1_2.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="input_data.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
