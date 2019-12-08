@@ -3,42 +3,28 @@
 open System
 open System.IO
 
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
-
 let convertToString num =
     match num with
-    | 0 -> " "
     | 1 -> "\u2588"
-    | _ -> ""
+    | _ -> " "
 
 let combineLayer (topVal, bottomVal) =
     match topVal with
-    | 0 -> 0
-    | 1 -> 1
+    | 0 | 1 -> topVal
     | _ -> bottomVal
 
-
-let rec processLayers (imageData: int array seq) =
-    let head = Seq.head imageData
-    if Seq.length imageData = 1
-    then head
-    else
-        imageData
-        |> Seq.tail
-        |> processLayers
-        |> Array.zip head
-        |> Array.map combineLayer
+let rec processLayers topLayer bottomLayer =
+    bottomLayer
+    |> Array.zip topLayer
+    |> Array.map combineLayer
 
 let drawImage width imageData =
-    let image = processLayers imageData
-                |> Array.map convertToString
-                |> Array.chunkBySize width
-                |> Array.map (fun row -> String.Join("", row))
-    String.Join("\n", image)
+    imageData
+    |> Seq.reduce processLayers
+    |> Array.map convertToString
+    |> Array.chunkBySize width
+    |> Array.map (String.concat "")
+    |> String.concat "\n"
 
 [<EntryPoint>]
 let main argv =
@@ -47,13 +33,10 @@ let main argv =
                         |> Seq.map (string >> int)
                         |> Seq.chunkBySize (25 * 6)
 
-    let part1 = imageLayers
-                |> Seq.map (Seq.countBy id)
-                |> Seq.minBy ((Seq.find (fst >> (=) 0)) >> snd)
-                |> Seq.filter (fst >> (<>) 0)
-                |> Seq.map snd
-                |> Seq.fold (*) 1
-    printfn "Part 1 %d" part1
+    let countNum num = Seq.filter ((=) num) >> Seq.length
+    let smallestLayer = imageLayers
+                        |> Seq.minBy (countNum 0)
+    printfn "Part 1 %d" ((countNum 1 smallestLayer) * (countNum 2 smallestLayer))
 
     printfn "Part 2\n%s" (drawImage 25 imageLayers)
     0 // return an integer exit code
