@@ -9,65 +9,51 @@ let readFile (fileName: string) = seq {
         yield sr.ReadLine()
 }
 
-let rec constructImage inputData width height =
-    let layer, rest = List.splitAt (width * height) inputData
-    match rest with
-    | [] -> [layer]
-    | _ -> layer :: (constructImage rest width height)
-
 let convertToString num =
     match num with
-        | 0 -> " "
-        | 1 -> "\u2588"
-        | _ -> ""
-
-let combineLayers (map: Map<int, int>) index value =
-    let newValue = map.[index]
-    match newValue with
     | 0 -> " "
     | 1 -> "\u2588"
-    | _ -> value
+    | _ -> ""
+
+let combineLayer (topVal, bottomVal) =
+    match topVal with
+    | 0 -> 0
+    | 1 -> 1
+    | _ -> bottomVal
 
 
-let rec processLayers imageData =
-    match imageData with
-    | [] -> []
-    | [x] -> x |> List.map convertToString
-    | x::rest ->
-        let newValues = x |> List.mapi (fun i v -> (i,v))
-                          |> (fun x -> new Map<int, int>(x))
-
-        processLayers rest
-        |> List.mapi (combineLayers newValues)
-
-let rec drawRow width (imageData: string list) =
-    let row, rest = List.splitAt width imageData
-    let rowDisplay = String.Join("", row)
-    match rest with
-    | [] -> [rowDisplay]
-    | _ ->  rowDisplay :: drawRow width rest
+let rec processLayers (imageData: int array seq) =
+    let head = Seq.head imageData
+    if Seq.length imageData = 1
+    then head
+    else
+        imageData
+        |> Seq.tail
+        |> processLayers
+        |> Array.zip head
+        |> Array.map combineLayer
 
 let drawImage width imageData =
     let image = processLayers imageData
-    String.Join("\n", (drawRow width image))
+                |> Array.map convertToString
+                |> Array.chunkBySize width
+                |> Array.map (fun row -> String.Join("", row))
+    String.Join("\n", image)
 
 [<EntryPoint>]
 let main argv =
-    let input = readFile "data.txt"
-                |> Seq.head
-                |> List.ofSeq
-                |> List.map (string >> int)
+    let imageLayers = File.ReadAllLines "data.txt"
+                        |> Seq.head
+                        |> Seq.map (string >> int)
+                        |> Seq.chunkBySize (25 * 6)
 
-    let image = constructImage input 25 6
-    let smallestLayer = image
-                        |> List.minBy (List.filter ((=) 0) >> List.length)
-    printfn "smallestLayer %A" smallestLayer
-    let part1 = smallestLayer
-                |> List.countBy id
-                |> List.filter (fst >> (<>) 0)
-                |> List.map snd
-                |> List.fold (*) 1
+    let part1 = imageLayers
+                |> Seq.map (Seq.countBy id)
+                |> Seq.minBy ((Seq.find (fst >> (=) 0)) >> snd)
+                |> Seq.filter (fst >> (<>) 0)
+                |> Seq.map snd
+                |> Seq.fold (*) 1
     printfn "Part 1 %d" part1
 
-    printfn "Part 2\n%s" (drawImage 25 image)
+    printfn "Part 2\n%s" (drawImage 25 imageLayers)
     0 // return an integer exit code
