@@ -12,8 +12,10 @@ let processWithInput arr noun verb =
     Array.set arr 2 verb
 
     try
-        IntCode.execute arr
-        Some(arr.[0])
+        IntCode.execute arr []
+        |> (fun c -> c.memory.[0L])
+        |> int
+        |> Some
     with
         | _ -> None
 
@@ -30,9 +32,10 @@ let main argv =
     [ for i in 0 .. 9999 -> async { return (processWithInput (Array.copy opts) (i / 100) (i % 100)), i } ]
     |> Async.Parallel
     |> Async.RunSynchronously
+    // [|0 .. 9999|]
+    // |> Array.map (fun i -> (processWithInput (Array.copy opts) (i / 100) (i % 100)), i)
     |> Array.filter (fun (v, _) -> v = Some(19690720))
-    |> Array.get
-    <| 0
+    |> Array.head
     |> snd
     |> printfn "Part 2: Final pair is %A"
     0 // return an integer exit code

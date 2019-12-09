@@ -12,12 +12,12 @@ let readFile (fileName: string) = seq {
 
 let execute opts inputData =
     let ops = Array.copy opts
-    let output = execute ops inputData
+    let output = execute64 ops inputData
     output.output |> List.rev
                   |> List.head
 
 let rec executeAmplifier opts seenPhases result =
-    let list = new Set<int>([0..4])
+    let list = new Set<int64>([0L..4L])
               |> Set.difference <| seenPhases
               |> Set.toList
 
@@ -33,15 +33,16 @@ let rec executeAmplifier opts seenPhases result =
 let generateAmplifiers opts phases =
     phases
     |> List.map (fun phase -> {
-        memory = Array.copy opts;
-        curIndex = 0;
+        memory = opts |> Array.mapi (fun i c -> int64(i),c) |> Map.ofArray;
+        curIndex = 0L;
         input = [phase];
         output = [];
         state = Running;
+        relativeBase = 0L;
     })
 
 let rec generatePhases min max seenPhases =
-    let list = new Set<int>([min..max])
+    let list = new Set<int64>([min..max])
               |> Set.difference <| seenPhases
               |> Set.toList
 
@@ -83,7 +84,7 @@ let rec recurseAmplifiers amps =
     let lastAmp = amps |> List.rev |> List.head
     match lastAmp.state with
     | Halted -> amps
-    | _ -> let startArg = if lastAmp.output.IsEmpty then 0 else lastAmp.output |> List.head
+    | _ -> let startArg = if lastAmp.output.IsEmpty then 0L else lastAmp.output |> List.head
            recurseAmplifiers (runAmplifiers startArg amps)
 
 [<EntryPoint>]
@@ -100,16 +101,16 @@ let main argv =
     let opts = readFile "input_data.txt"
                 |> Seq.head
                 |> (fun x -> x.Split[|','|])
-                |> Array.map int
+                |> Array.map int64
 
-    let results = generatePhases 0 4 (new Set<int>([]))
+    let results = generatePhases 0L 4L (new Set<int64>([]))
                         |> List.map
                             (generateAmplifiers opts
-                            >> runAmplifiers 0
+                            >> runAmplifiers 0L
                             >> getPipelineOutput)
     printfn "Part 1 %d" (List.max results)
 
-    let results = generatePhases 5 9 (new Set<int>([]))
+    let results = generatePhases 5L 9L (new Set<int64>([]))
                         |> List.map
                             (generateAmplifiers opts
                             >> recurseAmplifiers
