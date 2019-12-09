@@ -6,6 +6,6 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="day3.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
 </Project>

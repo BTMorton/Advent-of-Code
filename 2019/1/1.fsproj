@@ -6,7 +6,7 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="day1_2.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="input_data.txt" CopyToOutputDirectory="PreserveNewest" />
