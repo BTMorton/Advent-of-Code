@@ -64,7 +64,7 @@ module IntCode =
         let input1 = (calcValue computer paramModes 1L)
         let input2 = (calcValue computer paramModes 2L)
         let result = (op input1 input2)
-
+        // printfn "twoParamOp %d %d %d" input1 input2 result
         let newComputer = storeValue computer paramModes 3L result
         { newComputer with curIndex = index + 4L }
 
@@ -75,6 +75,7 @@ module IntCode =
         | input :: remaining ->
             let newComputer = storeValue computer paramModes 1L input
 
+            // printfn "store %d" input
             { newComputer with
                   curIndex = index + 2L
                   input = remaining }
@@ -83,7 +84,7 @@ module IntCode =
     let private print paramModes computer =
         let { memory = arr; curIndex = index } = computer
         let output = (calcValue computer paramModes 1L)
-        printfn "Output: %d" output
+        // printfn "Output: %d" output
         { computer with
               curIndex = index + 2L
               output = output :: computer.output }
@@ -111,6 +112,7 @@ module IntCode =
         let value =
             if comp input1 input2 then 1L
             else 0L
+        // printfn "setIf %d %d %d" input1 input2 value
 
         let newComputer = storeValue computer paramModes 3L value
 
@@ -128,6 +130,7 @@ module IntCode =
 
     let private updateRelativeBase paramModes computer =
         let change = calcValue computer paramModes 1L
+        // printfn "updateRelativeBase %d" change
         { computer with
               relativeBase = computer.relativeBase + change
               curIndex = computer.curIndex + 2L }

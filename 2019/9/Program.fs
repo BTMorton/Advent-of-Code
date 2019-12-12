@@ -10,7 +10,8 @@ let main argv =
                 |> (fun s -> s.Split(","))
                 |> Array.map int64
 
-    printfn "%A" ((execute64 input [2L]).output |> List.rev)
+    printfn "Part 1: %A" ((execute64 input [1L]).output |> List.rev)
+    printfn "Part 2: %A" ((execute64 input [2L]).output |> List.rev)
 
     printfn "Hello World from F#!"
     0 // return an integer exit code
