@@ -181,3 +181,9 @@ module IntCode =
         execute64 (arr |> Array.map int64) (inputData |> List.map int64)
 
     let executeComputer computer = processArray computer
+
+    let resumeComputer computer =
+        match computer.state with
+        | Running -> processArray computer
+        | Paused -> processArray { computer with state = Running }
+        | Halted -> computer
