@@ -10,20 +10,17 @@ let tryPart part opts input =
     let num = List.head output
     if num > 256L
     then printfn "Part %d: %d" part num
-    else 
+    else
         printfn "Error during Part %d:\n%s" part (output |> List.tail |> List.rev |> List.map char |> (fun l -> String.Join("", l)))
 
 [<EntryPoint>]
 let main argv =
-    let opts = IO.File.ReadAllLines "data.txt"
-                |> Seq.head
-                |> (fun s -> s.Split(","))
-                |> Array.map int64
+    let opts = loadFile "data.txt"
 
     tryPart 1 opts [
             "NOT A J";
             "NOT C T";
-            "OR T J"; 
+            "OR T J";
             "AND D J";
             "WALK";
         ]

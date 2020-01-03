@@ -3,12 +3,6 @@
 open System
 open System.IO
 
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
-
 let getDimensions (str: string) =
     str.Split [|'x'|]
     |> Array.map int
@@ -28,7 +22,7 @@ let getRequiredPaper (sides: int list) =
 
 [<EntryPoint>]
 let main argv =
-    let input = readFile "input_data.txt"
+    let input = IO.File.ReadAllLines "input_data.txt"
                 |> Seq.map getDimensions
     let paper = input |> Seq.map getSides
                       |> Seq.sumBy getRequiredPaper

@@ -24,14 +24,7 @@ let getMovement direction =
     | Left -> (-1,0)
 
 let paintPanel opts start =
-    let computer = {
-        memory = opts |> Seq.mapi (fun i c -> int64 i, int64 c) |> Map.ofSeq;
-        curIndex = 0L;
-        input = [if start then 1L else 0L];
-        output = [];
-        state = Running;
-        relativeBase = 0L;
-    }
+    let computer = createComputer opts [if start then 1L else 0L]
 
     let rec iter (panel: Map<int*int, bool>) (posX, posY) currentDirection computer =
         let result = executeComputer computer
@@ -86,10 +79,7 @@ let printPanel panel =
 
 [<EntryPoint>]
 let main argv =
-    let input = IO.File.ReadAllLines "data.txt"
-                |> Seq.head
-                |> (fun l -> l.Split(','))
-                |> Seq.map int64
+    let input = loadFile "data.txt"
 
     let panel = paintPanel input false
     printfn "Part 1: %d" (panel |> Map.count)

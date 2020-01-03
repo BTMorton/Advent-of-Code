@@ -1,13 +1,6 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open System
-open System.IO
-
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
 
 let isVowel char =
     match char with
@@ -57,7 +50,7 @@ let rec hasTwoPair (str: string) =
 
 [<EntryPoint>]
 let main argv =
-    let input = readFile "data.txt"
+    let input = IO.File.ReadAllLines "data.txt"
     printfn "Part 1 %d" (input
                          |> Seq.filter hasVowels
                          |> Seq.filter (List.ofSeq >> hasDouble)

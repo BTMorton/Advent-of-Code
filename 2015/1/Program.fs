@@ -1,13 +1,6 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open System
-open System.IO
-
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
 
 let floorCounter char =
     match char with
@@ -23,7 +16,7 @@ let floorCount floor char =
 
 [<EntryPoint>]
 let main argv =
-    let input = readFile "input_data.txt"
+    let input = IO.File.ReadAllLines "input_data.txt"
                 |> Seq.head
 
     let floor = input

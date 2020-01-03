@@ -1,5 +1,7 @@
 ﻿namespace IntCode
 
+open System
+
 module IntCode =
     type ParamMode =
         | Immediate
@@ -36,8 +38,7 @@ module IntCode =
 
     let private lookup computer index =
         // printfn "index %d exists %b" index (computer.memory.ContainsKey index)
-        if computer.memory.ContainsKey index then computer.memory.[index]
-        else 0L
+        if computer.memory.ContainsKey index then computer.memory.[index] else 0L
 
     let private getIndex computer paramModes paramNo =
         let { curIndex = startIndex } = computer
@@ -96,8 +97,7 @@ module IntCode =
         // printfn "Checking param %d" param
         if param
            |> int
-           |> comp
-        then
+           |> comp then
             // printfn "Jumping to %d" target
             { computer with curIndex = target }
         else
@@ -110,8 +110,7 @@ module IntCode =
         let input2 = (calcValue computer paramModes 2L)
 
         let value =
-            if comp input1 input2 then 1L
-            else 0L
+            if comp input1 input2 then 1L else 0L
         // printfn "setIf %d %d %d" input1 input2 value
 
         let newComputer = storeValue computer paramModes 3L value
@@ -161,17 +160,20 @@ module IntCode =
             | _ -> newComp
         | None -> halt computer
 
-    let execute64 (arr: int64 array) (inputData: int64 list) =
-        let computer =
-            { memory =
-                  (arr
-                   |> Array.mapi (fun i c -> (i |> int64, c))
-                   |> Map.ofArray)
-              input = inputData
-              output = []
-              curIndex = 0L
-              state = Running
-              relativeBase = 0L }
+    let createComputer opts inputData =
+        { memory =
+              (opts
+               |> Array.mapi (fun i c -> (int64 i, c))
+               |> Map.ofArray)
+          input = inputData
+          output = []
+          curIndex = 0L
+          state = Running
+          relativeBase = 0L }
+
+    let execute64 (opts: int64 array) (inputData: int64 list) =
+        let computer = createComputer opts inputData
+
         // computer.memory
         // |> Map.toList
         // |> List.iter (printfn "%A")
@@ -187,3 +189,9 @@ module IntCode =
         | Running -> processArray computer
         | Paused -> processArray { computer with state = Running }
         | Halted -> computer
+
+    let loadFile =
+        IO.File.ReadAllLines
+        >> Array.head
+        >> (fun s -> s.Split(","))
+        >> Array.map int64

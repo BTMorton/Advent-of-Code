@@ -1,13 +1,6 @@
 // Learn more about F# at http://fsharp.org
 
 open System
-open System.IO
-
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
 
 let rec getFuelForMass moduleMass = (moduleMass / 3) - 2
 
@@ -21,7 +14,7 @@ let rec calculateRequiredFuel moduleMass =
 
 [<EntryPoint>]
 let main argv =
-    let lines = readFile("input_data.txt")
+    let lines = IO.File.ReadAllLines "input_data.txt"
     let totalFuel = lines |> Seq.sumBy (int >> getFuelForMass)
     printfn "Part 1 Total Fuel: %d" totalFuel
 

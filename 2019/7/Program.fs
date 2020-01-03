@@ -2,13 +2,6 @@
 
 open System
 open IntCode.IntCode
-open System.IO
-
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
 
 let execute opts inputData =
     let ops = Array.copy opts
@@ -32,14 +25,7 @@ let rec executeAmplifier opts seenPhases result =
 
 let generateAmplifiers opts phases =
     phases
-    |> List.map (fun phase -> {
-        memory = opts |> Array.mapi (fun i c -> int64(i),c) |> Map.ofArray;
-        curIndex = 0L;
-        input = [phase];
-        output = [];
-        state = Running;
-        relativeBase = 0L;
-    })
+    |> List.map (fun phase -> createComputer opts [phase])
 
 let rec generatePhases min max seenPhases =
     let list = new Set<int64>([min..max])
@@ -89,19 +75,7 @@ let rec recurseAmplifiers amps =
 
 [<EntryPoint>]
 let main argv =
-    // let opts = [|3;31;3;32;1002;32;10;32;1001;31;-2;31;1007;31;0;33;1002;33;7;33;1;33;31;31;1;32;31;31;4;31;99;0;0;0|]
-    // let phases = [1;0;4;3;2]
-    // let amps = generateAmplifiers opts phases
-    // let results = runAmplifiers 0 amps
-    // let max = results |> List.rev
-    //                   |> List.head
-    //                   |> (fun x -> x.output)
-    //                   |> List.head
-    // printfn "max %d" max
-    let opts = readFile "input_data.txt"
-                |> Seq.head
-                |> (fun x -> x.Split[|','|])
-                |> Array.map int64
+    let opts = loadFile "input_data.txt"
 
     let results = generatePhases 0L 4L (new Set<int64>([]))
                         |> List.map

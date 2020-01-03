@@ -2,13 +2,6 @@
 
 open System
 open System.Text.RegularExpressions
-open System.IO
-
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
 
 type Action =
     On
@@ -90,7 +83,7 @@ let processInstruction1 (lights: bool array) instr =
 
 [<EntryPoint>]
 let main argv =
-    let input = readFile "data.txt"
+    let input = IO.File.ReadAllLines "data.txt"
                 |> Seq.map parseInstruction
                 |> Seq.fold (fun l i -> match i with
                                         | Some x -> x :: l

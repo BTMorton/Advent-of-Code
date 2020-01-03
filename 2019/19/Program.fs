@@ -33,10 +33,7 @@ let findSquareFit opts squareX squareY =
 
 [<EntryPoint>]
 let main argv =
-    let opts = IO.File.ReadAllLines "data.txt"
-                |> Seq.head
-                |> (fun s -> s.Split(","))
-                |> Array.map int64
+    let opts = loadFile "data.txt"
 
     printfn "Part 1: %d" (getPointsInArea opts 50L 50L)
     let result = (findSquareFit opts 100L 100L)

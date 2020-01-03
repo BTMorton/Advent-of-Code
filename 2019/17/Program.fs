@@ -20,14 +20,14 @@ let getMovement direction =
     | Left -> (-1,0)
     | Right -> (1,0)
 
-let getDirectionLeft direction = 
+let getDirectionLeft direction =
     match direction with
     | Up -> Left
     | Down -> Right
     | Left -> Down
     | Right -> Up
 
-let getDirectionRight direction = 
+let getDirectionRight direction =
     match direction with
     | Up -> Right
     | Down -> Left
@@ -127,7 +127,7 @@ let traverseMap (map: CameraMap) =
         let (nextDir, action) = next.Value
         let nextPos = addPoint curPos (getMovement nextDir)
         traverse nextPos nextDir 1 (action::actions)
-    
+
     let current = map |> Map.toList |> List.choose ToRobot |> List.head
     traverse (fst current) (snd current) 0 []
 
@@ -162,7 +162,7 @@ let splitPath path =
             then []
             else if remainingParts.Length = 0
             then [newMatches]
-            else 
+            else
             iter newMatches newPathParts
 
         match pathParts with
@@ -194,10 +194,7 @@ let replaceMatches (matches: string list) command =
 
 [<EntryPoint>]
 let main argv =
-    let opts = IO.File.ReadAllLines "data.txt"
-                |> Seq.head
-                |> (fun s -> s.Split(","))
-                |> Array.map int64
+    let opts = loadFile "data.txt"
 
     let map = createMap opts
     printMap map

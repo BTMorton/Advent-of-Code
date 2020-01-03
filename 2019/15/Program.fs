@@ -22,7 +22,7 @@ let getCommand dir =
     | West -> 3L
     | East -> 4L
 
-let getMovement dir = 
+let getMovement dir =
     match dir with
     | North -> (0, 1)
     | South -> (0, -1)
@@ -46,14 +46,7 @@ let getDirectionRight dir =
 let addPositions (posAX, posAY) (posBX,posBY) = (posAX + posBX),(posAY + posBY)
 
 let mapArea program =
-    let computer = {
-        memory = program |> List.mapi (fun i c -> (int64 i), c) |> Map.ofList;
-        curIndex = 0L;
-        input = [];
-        output = [];
-        state = Running;
-        relativeBase = 0L;
-    }
+    let computer = createComputer program []
 
     let rec iter computer (map: AreaMap) currentPosition nextDirection =
         let nextPosition = addPositions currentPosition (getMovement nextDirection)
@@ -68,7 +61,7 @@ let mapArea program =
 
         if newPosition = (0,0) && currentPosition <> (0,0)
         then map
-        else 
+        else
         iter resultComputer map newPosition newDirection
 
     iter computer ([((0,0),Space)] |> Map.ofList) (0,0) North
@@ -82,17 +75,13 @@ let calculateDistances (map: AreaMap) startPoint =
         |> List.filter (fun p -> map.[p] <> Wall)
         |> List.filter (fun p -> not (distances.ContainsKey p) || distances.[p] > nextStepCount)
         |> List.fold (fun (d: DistanceMap) p -> iter p nextStepCount (d.Add(p, nextStepCount))) distances
-    
+
     iter startPoint 0 ([(startPoint, 0)] |> Map.ofList)
 
 
 [<EntryPoint>]
 let main argv =
-    let opts = IO.File.ReadAllLines "data.txt"
-                |> Seq.head
-                |> (fun s -> s.Split(","))
-                |> Seq.map int64
-                |> Seq.toList
+    let opts = loadFile "data.txt"
 
     let map = mapArea opts
     let targetLocation = map |> Map.toList |> List.filter (snd >> (=) Target) |> List.head |> fst

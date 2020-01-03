@@ -89,14 +89,7 @@ let gameStep state =
 
 let playGame game =
     Array.set game 0 2L
-    let computer = {
-        memory = game |> Array.mapi (fun i c -> (int64 i),c) |> Map.ofArray;
-        curIndex = 0L;
-        relativeBase = 0L;
-        input = [];
-        output = [];
-        state = Running;
-    }
+    let computer = createComputer game []
     let state = {
         computer = computer;
         blockCount = -1;
@@ -114,10 +107,7 @@ let playGame game =
 
 [<EntryPoint>]
 let main argv =
-    let opts = IO.File.ReadAllLines "data.txt"
-                |> Array.head
-                |> (fun s -> s.Split(","))
-                |> Array.map int64
+    let opts = loadFile "data.txt"
 
     let result = execute64 opts []
                  |> (fun c -> c.output)

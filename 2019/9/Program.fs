@@ -5,10 +5,7 @@ open IntCode.IntCode
 
 [<EntryPoint>]
 let main argv =
-    let input = IO.File.ReadAllLines "data.txt"
-                |> Seq.head
-                |> (fun s -> s.Split(","))
-                |> Array.map int64
+    let input = loadFile "data.txt"
 
     printfn "Part 1: %A" ((execute64 input [1L]).output |> List.rev)
     printfn "Part 2: %A" ((execute64 input [2L]).output |> List.rev)

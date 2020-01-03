@@ -1,13 +1,6 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open System
-open System.IO
-
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
 
 let testData = seq {
     "COM)B";
@@ -43,7 +36,7 @@ let rec getAllOrbits (tree: Map<string, string>) key =
 
 [<EntryPoint>]
 let main argv =
-    let testData = readFile "input_data.txt"
+    let testData = IO.File.ReadAllLines "input_data.txt"
     let tree = generateTree testData
     let count = Map.toList tree |> List.sumBy (fun (k, _) -> (getAllOrbits tree k) |> List.length)
     printfn "Part 1: %d" count

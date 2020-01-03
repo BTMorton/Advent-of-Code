@@ -1,28 +1,18 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open System
-open IntCode
-open System.IO
-
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
+open IntCode.IntCode
 
 [<EntryPoint>]
 let main argv =
-    let opts = readFile "input_data.txt"
-                |> Seq.head
-                |> (fun x -> x.Split[|','|])
-                |> Array.map int
+    let opts = loadFile "input_data.txt"
 
-    let part1result = (IntCode.execute (Array.copy opts) [1])
+    let part1result = (execute64 (Array.copy opts) [1L])
     part1result.output
     |> List.head
     |> printfn "Part 1: %d"
 
-    let part2result = (IntCode.execute (Array.copy opts) [5])
+    let part2result = (execute64 (Array.copy opts) [5L])
     part2result.output
     |> List.head
     |> printfn "Part 2: %d"

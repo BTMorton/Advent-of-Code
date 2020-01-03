@@ -1,13 +1,6 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open System
-open System.IO
-
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
 
 type Direction =
     Up
@@ -45,7 +38,7 @@ let mapSome compFn mapFn index value  =
 
 [<EntryPoint>]
 let main argv =
-    let input = readFile "data.txt"
+    let input = IO.File.ReadAllLines "data.txt"
                 |> Seq.head
                 |> Seq.map convertToDirections
                 |> Seq.fold filteredList []

@@ -1,40 +1,30 @@
-open IntCode
-open System.IO
-
-let readFile (fileName: string) = seq {
-    use sr = new StreamReader(fileName)
-    while not sr.EndOfStream do
-        yield sr.ReadLine()
-}
+open IntCode.IntCode
+open System
 
 let processWithInput arr noun verb =
     Array.set arr 1 noun
     Array.set arr 2 verb
 
     try
-        IntCode.execute arr []
+        execute64 arr []
         |> (fun c -> c.memory.[0L])
-        |> int
         |> Some
     with
         | _ -> None
 
 [<EntryPoint>]
 let main argv =
-    let opts = readFile "input_data.txt"
-                |> Seq.head
-                |> (fun x -> x.Split[|','|])
-                |> Array.map int
+    let opts = loadFile "input_data.txt"
 
-    let part1 = (processWithInput (Array.copy opts) 12 2)
+    let part1 = (processWithInput (Array.copy opts) 12L 2L)
     printfn "Part 1: %d" (Option.get part1)
 
-    [ for i in 0 .. 9999 -> async { return (processWithInput (Array.copy opts) (i / 100) (i % 100)), i } ]
+    [ for i in 0L .. 9999L -> async { return (processWithInput (Array.copy opts) (i / 100L) (i % 100L)), i } ]
     |> Async.Parallel
     |> Async.RunSynchronously
     // [|0 .. 9999|]
     // |> Array.map (fun i -> (processWithInput (Array.copy opts) (i / 100) (i % 100)), i)
-    |> Array.filter (fun (v, _) -> v = Some(19690720))
+    |> Array.filter (fun (v, _) -> v = Some(19690720L))
     |> Array.head
     |> snd
     |> printfn "Part 2: Final pair is %A"
