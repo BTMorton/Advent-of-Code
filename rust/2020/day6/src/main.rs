@@ -5,7 +5,7 @@ use std::io::Read;
 use std::io::Result;
 
 #[cfg(test)]
-mod day5_tests {
+mod day6_tests {
     use super::*;
 
     static TEST_INPUT: &str = "
