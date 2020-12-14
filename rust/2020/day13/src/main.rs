@@ -15,7 +15,7 @@ mod day13_tests {
     }
 
     #[test]
-    fn day12a_test() {
+    fn day13a_test() {
         let bus_ids = vec![
             Some(7),
             Some(13),
@@ -26,11 +26,11 @@ mod day13_tests {
             Some(31),
             Some(19),
         ];
-        assert_eq!(295, day12a(939, &bus_ids))
+        assert_eq!(295, day13a(939, &bus_ids))
     }
 
     #[test]
-    fn day12b_test() {
+    fn day13b_test() {
         let bus_ids = vec![
             Some(7),
             Some(13),
@@ -41,7 +41,7 @@ mod day13_tests {
             Some(31),
             Some(19),
         ];
-        assert_eq!(1068781, day12b(&bus_ids))
+        assert_eq!(1068781, day13b(&bus_ids))
     }
 }
 
@@ -91,7 +91,7 @@ fn read_file(path: &str) -> Result<String> {
     Ok(input)
 }
 
-fn day12a(current_time: i64, bus_ids: &Vec<Option<i64>>) -> i64 {
+fn day13a(current_time: i64, bus_ids: &Vec<Option<i64>>) -> i64 {
     let result = bus_ids
         .iter()
         .filter_map(|&x| x)
@@ -102,7 +102,7 @@ fn day12a(current_time: i64, bus_ids: &Vec<Option<i64>>) -> i64 {
     result.0 * result.1
 }
 
-fn day12b(bus_ids: &Vec<Option<i64>>) -> i64 {
+fn day13b(bus_ids: &Vec<Option<i64>>) -> i64 {
     let prod = bus_ids.iter().filter_map(|&x| x).product::<i64>();
 
     let sum: i64 = bus_ids
@@ -127,17 +127,17 @@ fn main() -> Result<()> {
     use std::time::Instant;
     let total = Instant::now();
 
-    let result = day12a(current_time, &bus_ids);
+    let result = day13a(current_time, &bus_ids);
     println!(
-        "Day 12A - {} ({:.2}ms)",
+        "Day 13A - {} ({:.2}ms)",
         result,
         total.elapsed().as_millis()
     );
 
     let part2 = Instant::now();
-    let result = day12b(&bus_ids);
+    let result = day13b(&bus_ids);
     println!(
-        "Day 12B - {} ({:.2}ms)",
+        "Day 13B - {} ({:.2}ms)",
         result,
         part2.elapsed().as_millis()
     );
