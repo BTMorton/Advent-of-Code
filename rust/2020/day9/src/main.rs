@@ -149,7 +149,7 @@ fn find_number_not_created_from_preamble(input: &Vec<u32>, preamble_length: usiz
 
 fn is_created_from_preamble(map: &HashMap<u32, u32>, to_test: u32) -> bool {
     map.keys().any(|&n| {
-        if (n > to_test) {
+        if n > to_test {
             return false;
         }
 

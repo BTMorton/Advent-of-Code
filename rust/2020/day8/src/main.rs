@@ -62,14 +62,6 @@ acc +6";
     }
 
     #[test]
-    fn should_calculate_a_new_accumulator() {
-        assert_eq!(2, update_accumulator(1, 1));
-        assert_eq!(0, update_accumulator(1, -1));
-        assert_eq!(5, update_accumulator(10, -5));
-        assert_eq!(15, update_accumulator(5, 10));
-    }
-
-    #[test]
     fn should_calculate_the_next_command_index() {
         assert_eq!(
             3,
@@ -169,10 +161,6 @@ fn get_next_index(current_index: usize, command: &Command) -> usize {
         CommandType::Jump => (current_index as i32 + command.input) as usize,
         _ => current_index + 1,
     }
-}
-
-fn update_accumulator(accumulator: i32, input: i32) -> i32 {
-    accumulator + input
 }
 
 fn parse_command(command: &str) -> Option<Command> {
@@ -322,10 +310,10 @@ fn main() -> Result<()> {
     let input = read_file("input")?;
 
     let result = day8a(input.as_str());
-    println!("Day 6A - {}", result);
+    println!("Day 8A - {}", result);
 
     let result = day8b(input.as_str());
-    println!("Day 6B - {}", result);
+    println!("Day 8B - {}", result);
 
     Ok(())
 }

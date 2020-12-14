@@ -4,6 +4,7 @@ use std::io::BufReader;
 use std::io::Read;
 use std::io::Result;
 
+#[allow(dead_code)]
 struct Passport {
     birth_year: Option<u16>,
     issue_year: Option<u16>,
