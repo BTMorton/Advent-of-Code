@@ -3,19 +3,14 @@
 open System
 open AOCHelpers.AOC
 
-let step = 
-    Seq.collect (fun (timer, pop) ->
-        match timer with
-        | 0L -> [ (6L, pop); (8L, pop) ]
-        | _ -> [ ((timer - 1L), pop) ]
-    )
-    >> Seq.groupBy fst
-    >> Seq.map (fun (days, l) -> (days, Seq.fold (fun pop (_, p) -> pop + p) 0L l))
+let step state = 
+    match state with
+    | [a;b;c;d;e;f;g;h;i] -> [b;c;d;e;f;g;h+a;i;a]
+    | _ -> state
 
 let run days =
     applySteps days step
-    >> Seq.map snd
-    >> Seq.fold (+) 0L
+    >> List.sum
 
 let part1 = 
     run 80
@@ -25,9 +20,12 @@ let part2 =
 
 [<EntryPoint>]
 let main argv =
-    let input = readCommaSepIntList "real_data.txt"
+    let counts = readCommaSepIntList "real_data.txt"
                 |> Seq.countBy id
-                |> Seq.map (fun (days, count) -> (int64 days, int64 count))
+                |> Map.ofSeq
+
+    let input = [0..8]
+                |> List.map (fun i -> if counts.ContainsKey i then int64 counts.[i] else 0L)
 
     printfn "Part 1: %d" (part1 input)
     printfn "Part 2: %d" (part2 input)

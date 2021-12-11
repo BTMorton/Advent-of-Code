@@ -52,7 +52,6 @@ module AOC =
         (1,0)
         (-1,0)
     ]
-
     let diagDirections =  [
         (1,1)
         (1,-1)
@@ -109,8 +108,6 @@ module AOC =
     let findNeighbours map point =
         findSpecifiedNeighbours allDirections map point
 
-
     let rec applySteps stepCount op input =
-        match stepCount with
-        | 0 -> input
-        | _ -> applySteps (stepCount - 1) op (op input)
+        { 1..stepCount }
+        |> Seq.fold (fun state _ -> op state) input
