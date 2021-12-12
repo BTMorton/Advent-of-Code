@@ -47,12 +47,8 @@ let part2 =
 
 [<EntryPoint>]
 let main argv =
-    let inputBase = IO.File.ReadAllLines "real_data.txt"
-                    |> Seq.map (split "-" >> seqTo2Tuple)
-    
-    let input = inputBase
-                |> Seq.map (fun (a, b) -> (b, a))
-                |> Seq.append inputBase
+    let input = IO.File.ReadAllLines "real_data.txt"
+                |> Seq.collect (split "-" >> (fun arr -> [(arr.[0], arr.[1]);(arr.[1], arr.[0])]))
                 |> Seq.filter (snd >> (<>) "start")
                 |> Seq.groupBy fst
                 |> Seq.map (fun (k, v) -> (k, v |> Seq.map snd |> List.ofSeq))
