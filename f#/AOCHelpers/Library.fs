@@ -111,3 +111,6 @@ module AOC =
     let rec applySteps stepCount op input =
         { 1..stepCount }
         |> Seq.fold (fun state _ -> op state) input
+
+    let seqTo2Tuple (seq: seq<'a>) =
+        (Seq.item 0 seq, Seq.item 1 seq)

@@ -3,16 +3,63 @@
 open System
 open AOCHelpers.AOC
 
-let part1 _ = 
-    0
+type CaveMap = Map<string, list<string>>
 
-let part2 _ = 
-    0
+let visitSmallCavesOnce visited (cave: string) =
+    Char.ToUpper cave.[0] = cave.[0] || not (List.contains cave visited)
+
+let smallCaveVisitedTwice =
+    List.countBy id 
+    >> List.exists (fun (c: string, count) -> Char.IsLower c.[0] && count > 1)
+
+let visitSmallCavesTwice visited (cave: string) =
+    let result = match cave with
+                 | c when Char.IsUpper c.[0] -> true
+                 | c when not (List.contains cave visited) -> true
+                 | _ -> smallCaveVisitedTwice visited |> not
+    // printfn "visit %s = %b (%A)" cave result visited
+    result
+
+let rec traverseCaves caveSelector (map: CaveMap) targetPosition currentPosition (route: list<string>) = 
+    map.[currentPosition]
+    |> List.filter (caveSelector route)
+    |> List.fold (fun (routes: list<list<string>>) nextPosition ->
+        let newRoute = nextPosition :: route
+
+        match nextPosition with
+        | x when x = targetPosition -> [newRoute]
+        | x when map.ContainsKey x -> (traverseCaves caveSelector map targetPosition nextPosition newRoute)
+        | _ -> []
+        |> List.append routes 
+        |> List.filter (List.length >> (<) 0)
+    ) []
+
+let traverseMap caveSelector (map: CaveMap) =
+    traverseCaves caveSelector map "end" "start" ["start"]
+
+let part1 = 
+    traverseMap visitSmallCavesOnce
+    >> List.length
+
+let part2 = 
+    traverseMap visitSmallCavesTwice
+    >> List.length
 
 [<EntryPoint>]
 let main argv =
-    let input = IO.File.ReadAllLines "test_data.txt"
+    let inputBase = IO.File.ReadAllLines "real_data.txt"
+                    |> Seq.map (split "-" >> seqTo2Tuple)
+    
+    let input = inputBase
+                |> Seq.map (fun (a, b) -> (b, a))
+                |> Seq.append inputBase
+                |> Seq.filter (snd >> (<>) "start")
+                |> Seq.groupBy fst
+                |> Seq.map (fun (k, v) -> (k, v |> Seq.map snd |> List.ofSeq))
+                |> Map.ofSeq
     // let input = readIntLines "test_data.txt"
+    // for (key, value) in input |> Map.toSeq do
+    //     printfn "%s -> %A" key value
 
     printfn "Part 1: %d" (part1 input)
     printfn "Part 2: %d" (part2 input)
