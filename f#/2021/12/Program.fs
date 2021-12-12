@@ -13,12 +13,10 @@ let smallCaveVisitedTwice =
     >> List.exists (fun (c: string, count) -> Char.IsLower c.[0] && count > 1)
 
 let visitSmallCavesTwice visited (cave: string) =
-    let result = match cave with
-                 | c when Char.IsUpper c.[0] -> true
-                 | c when not (List.contains cave visited) -> true
-                 | _ -> smallCaveVisitedTwice visited |> not
-    // printfn "visit %s = %b (%A)" cave result visited
-    result
+    match cave with
+    | c when Char.IsUpper c.[0] -> true
+    | c when not (List.contains cave visited) -> true
+    | _ -> smallCaveVisitedTwice visited |> not
 
 let rec traverseCaves caveSelector (map: CaveMap) targetPosition currentPosition (route: list<string>) = 
     map.[currentPosition]
@@ -53,9 +51,6 @@ let main argv =
                 |> Seq.groupBy fst
                 |> Seq.map (fun (k, v) -> (k, v |> Seq.map snd |> List.ofSeq))
                 |> Map.ofSeq
-    // let input = readIntLines "test_data.txt"
-    // for (key, value) in input |> Map.toSeq do
-    //     printfn "%s -> %A" key value
 
     printfn "Part 1: %d" (part1 input)
     printfn "Part 2: %d" (part2 input)
