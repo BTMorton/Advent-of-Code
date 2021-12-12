@@ -9,13 +9,14 @@ let visitSmallCavesOnce visited (cave: string) =
     Char.ToUpper cave.[0] = cave.[0] || not (List.contains cave visited)
 
 let smallCaveVisitedTwice =
-    List.countBy id 
-    >> List.exists (fun (c: string, count) -> Char.IsLower c.[0] && count > 1)
+    List.filter (fun (c: string) -> Char.IsLower c.[0])
+    >> List.countBy id 
+    >> List.exists (snd >> (<) 1)
 
 let visitSmallCavesTwice visited (cave: string) =
     match cave with
     | c when Char.IsUpper c.[0] -> true
-    | c when not (List.contains cave visited) -> true
+    | c when not (List.contains c visited) -> true
     | _ -> smallCaveVisitedTwice visited |> not
 
 let rec traverseCaves caveSelector (map: CaveMap) targetPosition currentPosition (route: list<string>) = 
