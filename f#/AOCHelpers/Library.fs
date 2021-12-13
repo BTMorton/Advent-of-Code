@@ -114,3 +114,9 @@ module AOC =
 
     let seqTo2Tuple (seq: seq<'a>) =
         (Seq.item 0 seq, Seq.item 1 seq)
+    
+    let (|Prefix|_|) (p:string) (s:string) =
+        if s.StartsWith(p) then
+            Some(s.Substring(p.Length))
+        else
+            None
