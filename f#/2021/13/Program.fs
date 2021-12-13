@@ -42,8 +42,8 @@ let part2 pointSet folds =
     for y in  0 .. maxY do
         for x in 0 .. maxX do
             if newSet.Contains (x, y)
-            then printf "X"
-            else printf "."
+            then printf "█"
+            else printf " "
 
         printfn ""
 
