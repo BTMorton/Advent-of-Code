@@ -4,6 +4,9 @@ module AOC =
     
     type Point = int * int
 
+    let charToInt (char: char) =
+        int char - int '0'
+
     let addPoint ((x1, y1): Point) ((x2, y2): Point) =
         (x1 + x2, y1 + y2)
 
@@ -43,7 +46,7 @@ module AOC =
 
     let readIntMap =
         System.IO.File.ReadAllLines
-        >> Seq.map (Seq.map (fun c -> int c - int '0'))
+        >> Seq.map (Seq.map charToInt)
         >> createMap
 
     let hvDirections = [
